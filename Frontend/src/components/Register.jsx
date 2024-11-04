@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import Button from "../utils/Button";
 
-const RegisterStudent = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
     userType: "student",
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    collegeName: "", // For teachers only
-    questionPreference: "", // For teachers only
+    collegeName: "", //only for questioners
+    questionPreference: "", //only for questioners
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -96,34 +97,47 @@ const RegisterStudent = () => {
             />
           </div>
 
-          <div>
+          <div className="relative">
             <input
               placeholder="Enter Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
               required
               className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-indigo-500"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
           </div>
 
-          <div>
+          <div className="relative">
             <input
               placeholder="Confirm Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               required
               className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-indigo-500"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
           </div>
 
           {/* Conditionally only for Teachers */}
           {formData.userType === "teacher" && (
             <>
-              {/* College Name Input */}
               <div>
                 <input
                   placeholder="College Name"
@@ -152,7 +166,6 @@ const RegisterStudent = () => {
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          {/*  */}
           <div className="w-full flex justify-center items-center">
             <Button Type={"submit"} name={"Register"} />
           </div>
@@ -162,4 +175,4 @@ const RegisterStudent = () => {
   );
 };
 
-export default RegisterStudent;
+export default Register;

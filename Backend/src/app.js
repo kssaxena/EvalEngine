@@ -17,5 +17,10 @@ app.use((req, res, next) => {
   next();
 });
 
+import respondentRoute from "./routes/respondent.routes.js";
+import questionerRoute from "./routes/questioner.routes.js";
+
+app.use("/api/v1/respondent", respondentRoute);
+app.use("/api/v1/questioner", questionerRoute);
 
 export { app };

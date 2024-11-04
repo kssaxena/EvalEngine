@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import Jwt from "jsonwebtoken";
 
-const userRespondentSchema = new mongoose.schema({
+const userRespondentSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
