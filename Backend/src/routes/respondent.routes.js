@@ -7,6 +7,6 @@ import {
 const router = express.Router();
 
 router.route("/register").post(userRespondentRegister);
-router.route("/login").get(userRespondentLogin);
+router.route("/login").post(userRespondentLogin);
 
 export default router;
