@@ -6,8 +6,9 @@ import ApiResponse from "../utils/ApiResponse.js";
 const userRespondentRegister = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
+  console.log([name, email, password]);
   if (
-    [name, email, password].some((field) => (field?.trim() ?? "").length === 0)
+    [name, email, password].some((field) => (field.trim() ?? "").length === 0)
   ) {
     throw new ApiError(400, "All fields are Required");
   }
@@ -70,7 +71,7 @@ const userRespondentLogin = asyncHandler(async (req, res) => {
 
   if (!user) throw new ApiError(404, "User not found");
 
-  const isPasswordValid = await user.isPasswordCorrect(password);
+  const isPasswordValid = await user.comparePassword(password);
 
   if (!isPasswordValid) throw new ApiError(401, "Invalid user password");
 
