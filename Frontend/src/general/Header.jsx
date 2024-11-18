@@ -7,14 +7,14 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleClickLogin = () => {
-    navigate("/login-Student");
+    navigate("/login");
   };
   const handleClickRegister = () => {
-    navigate("/register-Student");
+    navigate("/register");
   };
 
   const handleClickProfile = () => {
-    navigate("/profile-Student");
+    navigate("/profile");
   };
   return (
     <div className={`h-20 bg-[#191A1F] flex justify-around items-center`}>
@@ -33,11 +33,11 @@ const Header = () => {
         className="px-4 py-2  dark:text-white text-black rounded-lg font-bold transform hover:translate-y-1 transition duration-400 bg-[#6A47FF]"
       >
         <section className={`flex justify-center items-center gap-5`}>
-          <img
+          {/* <img
             src="https://via.placeholder.com/50"
             alt="Profile Pic"
             className="ProfilePic rounded-full"
-          />
+          /> */}
           <h2 className="ProfileHolderName">Name</h2>
         </section>
       </button>

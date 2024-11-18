@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "../utils/Button";
 
+
 const LoginStudent = () => {
   return (
     <div className="flex flex-col justify-center items-center">
