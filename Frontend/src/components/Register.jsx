@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Button from "../utils/Button";
+import { FetchData } from "../utils/FetchFromApi";
+import { institutions } from "../utils/Constants";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -8,8 +10,8 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    collegeName: "", //only for questioners
-    questionPreference: "", //only for questioners
+    college_name: "", //only for questioners
+    question_preference: "", //only for questioners
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -34,8 +36,61 @@ const Register = () => {
       setError("Passwords do not match");
       return;
     }
-    setError("");
-    console.log("Registration successful:", formData);
+
+     console.log(formData.userType);
+     if (formData.userType === "student") {
+       handleRespondentRegister();
+       console.log("selected student");
+     } else {
+       handleQuestionerRegister();
+       console.log("selected Teacher");
+     }
+    // console.log("Registration successful:", formData);
+  };
+
+  const handleRespondentRegister = async () => {
+    try {
+      const { name, email, password } = formData;
+      const dataToSend = { name, email, password };
+
+      const response = await FetchData(
+        `respondent/register`,
+        "post",
+        dataToSend
+      );
+      console.log(dataToSend);
+
+      if (response.status === 200) {
+        console.log("Registration successful:", response.data);
+        alert("Registration Successful");
+      } else {
+        console.error("Error:", response.data);
+        setError("Failed to Register");
+      }
+    } catch (error) {
+      console.error("Request failed:", error);
+      setError("An error occurred during registration");
+    }
+  };
+  const handleQuestionerRegister = async () => {
+    try {
+      // const { name, email, password } = formData;
+      // const dataToSend = { name, email, password };
+
+      const response = await FetchData(questioner / register, "post", formData);
+      console.log(formData);
+
+      if (response.status === 200) {
+        console.log("Registration successful:", response.data);
+        alert("Registration Successful");
+      } else {
+        console.error("Error:", response.data);
+        setError("Failed to Register");
+      }
+    } catch (error) {
+      console.error("Request failed:", error);
+      setError("An error occurred during registration");
+    }
   };
 
   return (
@@ -139,27 +194,43 @@ const Register = () => {
           {formData.userType === "teacher" && (
             <>
               <div>
-                <input
-                  placeholder="College Name"
-                  type="text"
-                  name="collegeName"
-                  value={formData.collegeName}
+                <select
+                  name="college_name"
+                  value={formData.college_name}
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
-                />
+                >
+                  <option value="" disabled>
+                    Select College Name
+                  </option>
+                  {institutions.map((institutions, index) => (
+                    <option
+                      key={index}
+                      className="bg-gray-800"
+                      value={institutions}
+                    >
+                      {institutions}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
-                <input
-                  placeholder="Question Preference"
-                  type="text"
-                  name="questionPreference"
-                  value={formData.questionPreference}
+                <select
+                  name="question_preference"
+                  value={formData.question_preference}
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
-                />
+                >
+                  <option value="code" className="bg-gray-800">
+                    Code
+                  </option>
+                  <option value="text" className="bg-gray-800">
+                    Text
+                  </option>
+                </select>
               </div>
             </>
           )}
@@ -167,7 +238,10 @@ const Register = () => {
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <div className="w-full flex justify-center items-center">
-            <Button Type={"submit"} name={"Register"} />
+            <Button
+              type="submit"
+              name="Register"
+            />
           </div>
         </form>
       </div>
