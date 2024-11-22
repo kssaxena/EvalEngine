@@ -36,15 +36,7 @@ const Register = () => {
       setError("Passwords do not match");
       return;
     }
-
-     console.log(formData.userType);
-     if (formData.userType === "student") {
-       handleRespondentRegister();
-       console.log("selected student");
-     } else {
-       handleQuestionerRegister();
-       console.log("selected Teacher");
-     }
+    setError("");
     // console.log("Registration successful:", formData);
   };
 
@@ -77,7 +69,7 @@ const Register = () => {
       // const { name, email, password } = formData;
       // const dataToSend = { name, email, password };
 
-      const response = await FetchData(`questioner / register`, "post", formData);
+      const response = await FetchData(`questioner/register`, "post", formData);
       console.log(formData);
 
       if (response.status === 200) {
@@ -92,6 +84,8 @@ const Register = () => {
       setError("An error occurred during registration");
     }
   };
+
+  console.log(formData);
 
   return (
     <div className="py-20 flex items-center justify-center">
@@ -241,6 +235,26 @@ const Register = () => {
             <Button
               type="submit"
               name="Register"
+              // onClick={() => {
+              //   if (formData.userType === "student") {
+              //     handleRespondentRegister();
+              //   } else if (formData.userType === "teacher") {
+              //     handleRespondentRegister();
+              //   } else {
+              //     console.error("Invalid user type");
+              //   }
+              // }}
+
+              // onClick={
+              //   formData.userType === "student"
+              //     ? handleRespondentRegister
+              //     : formData.userType === "teacher"
+              //     ? handleQuestionerRegister
+              //     : () => console.error("Invalid user type")
+              // }
+
+              // OnClick={handleRespondentRegister}
+              OnClick={handleQuestionerRegister}
             />
           </div>
         </form>

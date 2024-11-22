@@ -3,7 +3,7 @@ import axios from "axios";
 export const DomainUrl = "http://localhost:8000";
 
 export const FetchData = async (url, method, data) => {
-  const Base_URL = `${DomainUrl}/api/v1`
+  const Base_URL = `${DomainUrl}/api/v1`;
   const AccessToken = localStorage.getItem("AccessToken");
 
   const options = {
@@ -11,7 +11,7 @@ export const FetchData = async (url, method, data) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${AccessToken}`,
     },
-    withCredentials: true,
+    // withCredentials: true,
   };
 
   if (method === "get") {
