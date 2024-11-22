@@ -1,37 +1,55 @@
-import React from "react";
+import React, { useRef } from "react";
 import Button from "../utils/Button";
 
 const LoginStudent = () => {
+  const formRef = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(formRef);
+
+    console.log(formData.get("userType"));
+  };
+
   return (
     <div className="flex flex-col justify-center items-center">
-      <section className="flex justify-center items-center w-full">
-        {/* <h1>For Teachers</h1> */}
-
+      <section className="flex flex-col justify-center items-center w-full">
+        {/* form  */}
         <div className="flex justify-center items-center flex-col gap-10 py-20 w-[30%]">
-          <h1>Login as Student</h1>
-          <form className="flex justify-center items-center flex-col gap-5 w-[70%]">
-            <input
-              type="text"
-              placeholder="Username"
-              className="p-2 bg-transparent border-b border-[#6A47FF] outline-none w-full"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="p-2 bg-transparent border-b border-[#6A47FF] outline-none w-full"
-            />
-            <Button Type="submit" name={"Login"} />
-          </form>
-        </div>
+          <h1>Login</h1>
+          <form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            className="flex justify-center items-center flex-col gap-5 w-[70%]"
+          >
+            {/* User Type Selection */}
+            <div className="flex items-center justify-center space-x-4 mb-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="userType"
+                  value="student"
+                  className="form-radio text-indigo-600"
+                  defaultChecked
+                />
+                <span className="text-white">Student</span>
+              </label>
 
-        {/* <h1>For Teachers</h1> */}
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="userType"
+                  value="teacher"
+                  className="form-radio text-indigo-600"
+                />
+                <span className="text-white">Teacher</span>
+              </label>
+            </div>
 
-        <div className="flex justify-center items-center flex-col gap-10 py-20 w-[30%]">
-          <h1>Login as Teacher</h1>
-          <form className="flex justify-center items-center flex-col gap-5 w-[70%]">
             <input
-              type="text"
-              placeholder="Username"
+              type="email"
+              placeholder="Email"
               className="p-2 bg-transparent border-b border-[#6A47FF] outline-none w-full"
             />
             <input
@@ -45,7 +63,10 @@ const LoginStudent = () => {
       </section>
       <div className="m-20">
         <p>
-          Don't have an account? <a href="/register-student" className="hover:underline">Register here</a>
+          Don't have an account?{" "}
+          <a href="/register-student" className="hover:underline">
+            Register here
+          </a>
         </p>
       </div>
     </div>

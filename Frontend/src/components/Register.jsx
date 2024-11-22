@@ -77,7 +77,7 @@ const Register = () => {
       // const { name, email, password } = formData;
       // const dataToSend = { name, email, password };
 
-      const response = await FetchData(questioner / register, "post", formData);
+      const response = await FetchData(`questioner / register`, "post", formData);
       console.log(formData);
 
       if (response.status === 200) {
