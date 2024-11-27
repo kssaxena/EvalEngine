@@ -1,22 +1,35 @@
 import React, { useRef } from "react";
 import Button from "../utils/Button";
-
+import { FetchData } from "../utils/FetchFromApi";
 
 const LoginStudent = () => {
   const formRef = useRef(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(formRef);
+    const formData = new FormData(formRef.current);
+    const userType = formData.get("userType");
+    const email = formData.get("email");
+    const password = formData.get("password");
 
-    console.log(formData.get("userType"));
+    const endpoint =
+      userType === "student" ? "respondent/login" : "questioner/login";
+
+    const payload = { email, password };
+
+    try {
+      const response = await FetchData(endpoint, "post", payload);
+      console.log("Login successful", response.data);
+    } catch (error) {
+      console.error("Error logging in:", error.response?.data || error.message);
+    }
   };
 
   return (
     <div className="flex flex-col justify-center items-center">
       <section className="flex flex-col justify-center items-center w-full">
-        {/* form  */}
+        {/* form */}
         <div className="flex justify-center items-center flex-col gap-10 py-20 w-[30%]">
           <h1>Login</h1>
           <form
@@ -50,11 +63,13 @@ const LoginStudent = () => {
 
             <input
               type="email"
+              name="email"
               placeholder="Email"
               className="p-2 bg-transparent border-b border-[#6A47FF] outline-none w-full"
             />
             <input
               type="password"
+              name="password"
               placeholder="Password"
               className="p-2 bg-transparent border-b border-[#6A47FF] outline-none w-full"
             />

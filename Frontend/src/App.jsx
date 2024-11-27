@@ -11,7 +11,7 @@ import Profile from "./components/pages/Profile";
 function App() {
   return (
     <>
-      <div className=" text-neutral-300 antialiased selection:bg-cyan-500 selection:text-cyan-900 bg-[#1F222B]">
+      <div className="h-screen text-neutral-300 antialiased selection:bg-cyan-500 selection:text-cyan-900 bg-[#1F222B]">
         <Header />
         <Routes>
           <Route path="/login" element={<LoginStudent />} />
@@ -23,8 +23,8 @@ function App() {
 
           <Route path="/profile" element={<Profile />} />
         </Routes>
-        <Footer />
       </div>
+      <Footer />
     </>
   );
 }

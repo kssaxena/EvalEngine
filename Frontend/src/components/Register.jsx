@@ -66,9 +66,6 @@ const Register = () => {
   };
   const handleQuestionerRegister = async () => {
     try {
-      // const { name, email, password } = formData;
-      // const dataToSend = { name, email, password };
-
       const response = await FetchData(`questioner/register`, "post", formData);
       console.log(formData);
 
