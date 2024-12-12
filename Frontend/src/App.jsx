@@ -7,24 +7,27 @@ import LoginStudent from "./components/Login";
 import RegisterStudent from "./components/Register";
 import Respondent from "./components/pages/Respondent";
 import Profile from "./components/pages/Profile";
+import RespondentAnswer from "./components/RespondentAnswerInput";
+import RespondentAnswerInput from "./components/RespondentAnswerInput";
 
 function App() {
   return (
     <>
-      <div className="h-screen text-neutral-300 antialiased selection:bg-cyan-500 selection:text-cyan-900 bg-[#1F222B]">
+      <div className=" text-neutral-300 antialiased selection:bg-cyan-500 selection:text-cyan-900 bg-[#1F222B]">
         <Header />
         <Routes>
-          <Route path="/login" element={<LoginStudent />} />
-          <Route path="/register" element={<RegisterStudent />} />
+          <Route path="/login-Student" element={<LoginStudent />} />
+          <Route path="/register-Student" element={<RegisterStudent />} />
 
           <Route path="/" element={<Hero />} />
           <Route path="/questioner" element={<Questioner />} />
           <Route path="/respondent" element={<Respondent />} />
 
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile-student" element={<Profile />} />
+          <Route path="/answers" element={<RespondentAnswerInput />} />
         </Routes>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 }
