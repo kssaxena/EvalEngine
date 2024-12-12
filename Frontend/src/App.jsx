@@ -7,7 +7,6 @@ import LoginStudent from "./components/Login";
 import RegisterStudent from "./components/Register";
 import Respondent from "./components/pages/Respondent";
 import Profile from "./components/pages/Profile";
-import RespondentAnswer from "./components/RespondentAnswerInput";
 import RespondentAnswerInput from "./components/RespondentAnswerInput";
 
 function App() {
