@@ -2,19 +2,16 @@ import React from "react";
 import Button from "../utils/Button";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useSelector} from "react-redux";
 
 const Header = () => {
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
+  const user = useSelector((store) => store.user.user);
 
-  const handleClickLogin = () => {
-    navigate("/login");
-  };
-  const handleClickRegister = () => {
-    navigate("/register");
-  };
+  console.log(user);
 
   const handleClickProfile = () => {
-    navigate("/profile");
+    Navigate("/profile");
   };
   return (
     <div className={`h-20 bg-[#191A1F] flex justify-around items-center`}>
@@ -24,23 +21,14 @@ const Header = () => {
           EvalEngine
         </Link>
       </section>
-      <section className={`flex justify-center items-center gap-5 px-5`}>
-        <Button OnClick={handleClickLogin} name={"Login"} />
-        <Button OnClick={handleClickRegister} name={"Register"} />
-      </section>
-      <button
-        onClick={handleClickProfile}
-        className="px-4 py-2  dark:text-white text-black rounded-lg font-bold transform hover:translate-y-1 transition duration-400 bg-[#6A47FF]"
-      >
-        <section className={`flex justify-center items-center gap-5`}>
-          {/* <img
-            src="https://via.placeholder.com/50"
-            alt="Profile Pic"
-            className="ProfilePic rounded-full"
-          /> */}
-          <h2 className="ProfileHolderName">Name</h2>
+      {user.length === 0 && (
+        <section className={`flex justify-center items-center gap-5 px-5`}>
+          <Button OnClick={() => Navigate("/login")} name={"Login"} />
+          <Button OnClick={() => Navigate("/register")} name={"Register"} />
         </section>
-      </button>
+      )}
+
+      {user.length >0 && <Button OnClick={handleClickProfile} name={user[0]?.name} />}
     </div>
   );
 };

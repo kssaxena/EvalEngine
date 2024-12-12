@@ -2,33 +2,40 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import Jwt from "jsonwebtoken";
 
-const userQuestionerSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    trim: true,
+const userQuestionerSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    collegeName: {
+      type: String,
+      required: true,
+    },
+    question_preference: {
+      type: String,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    allTests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Test",
+      },
+    ],
   },
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  college_name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  question_preference: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  password: {
-    type: String,
-    trim: true,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 //hashing password
 

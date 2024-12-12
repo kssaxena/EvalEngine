@@ -4,12 +4,10 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 const userQuestionerRegister = asyncHandler(async (req, res) => {
-  const { name, email, college_name, question_preference, password } = req.body;
+  const { name, email, password, collegeName } = req.body;
 
   if (
-    [name, email, college_name, question_preference, password].some(
-      (field) => (field?.trim() ?? "").length === 0
-    )
+    [name, email, collegeName, password].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "All fields are Required");
   }
@@ -27,8 +25,7 @@ const userQuestionerRegister = asyncHandler(async (req, res) => {
   const newUser = await UserQuestioner.create({
     name,
     email,
-    college_name,
-    question_preference,
+    collegeName,
     password,
   });
 

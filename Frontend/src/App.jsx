@@ -7,8 +7,11 @@ import LoginStudent from "./components/Login";
 import RegisterStudent from "./components/Register";
 import Respondent from "./components/pages/Respondent";
 import Profile from "./components/pages/Profile";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {}, []);
+
   return (
     <>
       <div className=" text-neutral-300 antialiased selection:bg-cyan-500 selection:text-cyan-900 bg-[#1F222B]">
