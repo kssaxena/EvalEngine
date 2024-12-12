@@ -63,9 +63,11 @@ const generateAccessAndRefreshTokens = async (userId) => {
 const userRespondentLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  if (!(email || !password)) {
+  if (!email || !password) {
     throw new ApiError(400, "Please provide email and password");
   }
+
+  console.log(email, password);
 
   const user = await UserRespondent.findOne({ email });
 

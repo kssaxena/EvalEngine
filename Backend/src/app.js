@@ -19,8 +19,10 @@ app.use((req, res, next) => {
 
 import respondentRoute from "./routes/respondent.routes.js";
 import questionerRoute from "./routes/questioner.routes.js";
+import testRoutes from "./routes/test.routes.js";
 
 app.use("/api/v1/respondent", respondentRoute);
 app.use("/api/v1/questioner", questionerRoute);
+app.use("/api/v1/test", testRoutes);
 
 export { app };

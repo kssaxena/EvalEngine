@@ -1,88 +1,67 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Button from "../utils/Button";
 import { FetchData } from "../utils/FetchFromApi";
 import { institutions } from "../utils/Constants";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { parseErrorMessage } from "../utils/ErrorMessageParser";
+import { setUser } from "../utils/UserSlice";
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    userType: "student",
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    college_name: "", //only for questioners
-    question_preference: "", //only for questioners
+  // Variables
+  const [userType, setUserType] = useState("student");
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const formRef = useRef(null);
+  const Dispatch = useDispatch();
+  const Navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const inputList = [
+    { title: "name", inputType: "text" },
+    { title: "email", inputType: "email" },
+    { title: "password", inputType: "password" },
+    { title: "confirmPassword", inputType: "password" },
+  ];
 
+  // Utility functions
   const handleUserTypeChange = (e) => {
-    setFormData({
-      ...formData,
-      userType: e.target.value,
-    });
+    setUserType(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+
+    const formData = new FormData(formRef.current);
+
+    const password = formData.get("password");
+    const confPass = formData.get("confirmPassword");
+
+    if (password != confPass) {
+      setError("Password doesn't match! Please recheck");
       return;
-    }
-    setError("");
-    // console.log("Registration successful:", formData);
-  };
+    } else setError("");
 
-  const handleRespondentRegister = async () => {
+    formData.delete("confirmPassword");
+
+    const partialUrl =
+      userType === "student" ? "respondent/register" : "questioner/register";
+
     try {
-      const { name, email, password } = formData;
-      const dataToSend = { name, email, password };
+      const response = await FetchData(partialUrl, "post", formData);
+      console.log(response);
+      alert(response.data.message);
+      Dispatch(setUser(response.data.data));
+      Dispatch(setUser(userType));
 
-      const response = await FetchData(
-        `respondent/register`,
-        "post",
-        dataToSend
-      );
-      console.log(dataToSend);
-
-      if (response.status === 200) {
-        console.log("Registration successful:", response.data);
-        alert("Registration Successful");
-      } else {
-        console.error("Error:", response.data);
-        setError("Failed to Register");
-      }
+      Navigate("/");
     } catch (error) {
-      console.error("Request failed:", error);
-      setError("An error occurred during registration");
+      console.log(error);
+      alert(parseErrorMessage(error.response.data));
     }
   };
-  const handleQuestionerRegister = async () => {
-    try {
-      const response = await FetchData(`questioner/register`, "post", formData);
-      console.log(formData);
-
-      if (response.status === 200) {
-        console.log("Registration successful:", response.data);
-        alert("Registration Successful");
-      } else {
-        console.error("Error:", response.data);
-        setError("Failed to Register");
-      }
-    } catch (error) {
-      console.error("Request failed:", error);
-      setError("An error occurred during registration");
-    }
-  };
-
-  console.log(formData);
 
   return (
     <div className="py-20 flex items-center justify-center">
@@ -91,168 +70,105 @@ const Register = () => {
           Register
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* User Type Selection */}
-          <div className="flex items-center justify-center space-x-4 mb-4">
-            <label className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name="userType"
-                value="student"
-                checked={formData.userType === "student"}
-                onChange={handleUserTypeChange}
-                className="form-radio text-indigo-600"
-              />
-              <span className="text-white">Student</span>
-            </label>
-
-            <label className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name="userType"
-                value="teacher"
-                checked={formData.userType === "teacher"}
-                onChange={handleUserTypeChange}
-                className="form-radio text-indigo-600"
-              />
-              <span className="text-white">Teacher</span>
-            </label>
-          </div>
-
-          <div>
+        {/* User Type Selection */}
+        <div className="flex items-center justify-center space-x-4 mb-4">
+          <label className="flex items-center space-x-2">
             <input
-              placeholder="Enter Name"
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
+              type="radio"
+              name="userType"
+              value="student"
+              onChange={handleUserTypeChange}
+              className="form-radio text-indigo-600"
+              defaultChecked
             />
-          </div>
+            <span className="text-white">Student</span>
+          </label>
 
-          <div>
+          <label className="flex items-center space-x-2">
             <input
-              placeholder="Enter Email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
+              type="radio"
+              name="userType"
+              value="teacher"
+              onChange={handleUserTypeChange}
+              className="form-radio text-indigo-600"
             />
-          </div>
+            <span className="text-white">Teacher</span>
+          </label>
+        </div>
 
-          <div className="relative">
-            <input
-              placeholder="Enter Password"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-indigo-500"
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
-
-          <div className="relative">
-            <input
-              placeholder="Confirm Password"
-              type={showPassword ? "text" : "password"}
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-indigo-500"
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
-
-          {/* Conditionally only for Teachers */}
-          {formData.userType === "teacher" && (
-            <>
-              <div>
-                <select
-                  name="college_name"
-                  value={formData.college_name}
-                  onChange={handleChange}
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+          {/* Input fields */}
+          {inputList.map((item, index) => {
+            return item.title === "password" ||
+              item.title === "confirmPassword" ? (
+              <div className="relative" key={index}>
+                <input
+                  placeholder={item.title
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/^./, (str) => str.toUpperCase())}
+                  type={showPassword[item.title] ? "text" : "password"}
+                  name={item.title}
                   required
                   className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowPassword((prevData) => {
+                      return {
+                        ...prevData,
+                        [item.title]: !showPassword[item.title],
+                      };
+                    })
+                  }
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-indigo-500"
                 >
-                  <option value="" disabled>
-                    Select College Name
-                  </option>
-                  {institutions.map((institutions, index) => (
-                    <option
-                      key={index}
-                      className="bg-gray-800"
-                      value={institutions}
-                    >
-                      {institutions}
-                    </option>
-                  ))}
-                </select>
+                  {showPassword[item.title] ? "Hide" : "Show"}
+                </button>
               </div>
-
-              <div>
-                <select
-                  name="question_preference"
-                  value={formData.question_preference}
-                  onChange={handleChange}
+            ) : (
+              <div key={index}>
+                <input
+                  placeholder={item.title
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/^./, (str) => str.toUpperCase())}
+                  type={item.inputType}
+                  name={item.title}
                   required
                   className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
-                >
-                  <option value="code" className="bg-gray-800">
-                    Code
-                  </option>
-                  <option value="text" className="bg-gray-800">
-                    Text
-                  </option>
-                </select>
+                />
               </div>
-            </>
+            );
+          })}
+
+          {/* Institute selection */}
+          {userType === "teacher" && (
+            <div>
+              <select
+                name="collegeName"
+                className="w-full px-4 py-2 mt-2 border-b focus:outline-none border-indigo-500 bg-transparent text-white"
+                required
+              >
+                <option value="" selected disabled>
+                  Select College Name
+                </option>
+                {institutions.map((institutions, index) => (
+                  <option
+                    key={index}
+                    className="bg-gray-800"
+                    value={institutions}
+                  >
+                    {institutions}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <div className="w-full flex justify-center items-center">
-            <Button
-              type="submit"
-              name="Register"
-              // onClick={() => {
-              //   if (formData.userType === "student") {
-              //     handleRespondentRegister();
-              //   } else if (formData.userType === "teacher") {
-              //     handleRespondentRegister();
-              //   } else {
-              //     console.error("Invalid user type");
-              //   }
-              // }}
-
-              // onClick={
-              //   formData.userType === "student"
-              //     ? handleRespondentRegister
-              //     : formData.userType === "teacher"
-              //     ? handleQuestionerRegister
-              //     : () => console.error("Invalid user type")
-              // }
-
-              // OnClick={handleRespondentRegister}
-              OnClick={handleQuestionerRegister}
-            />
+            <Button type="submit" name="Register" />
           </div>
         </form>
       </div>
