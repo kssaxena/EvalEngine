@@ -47,7 +47,7 @@ const LoginStudent = () => {
   return (
     <div className="flex flex-col justify-center items-center">
       <section className="flex flex-col justify-center items-center w-full">
-        {/* form  */}
+        {/* form */}
         <div className="flex justify-center items-center flex-col gap-10 py-20 w-[30%]">
           <h1>Login</h1>
 
@@ -84,14 +84,14 @@ const LoginStudent = () => {
           >
             <input
               type="email"
-              placeholder="Email"
               name="email"
+              placeholder="Email"
               className="p-2 bg-transparent border-b border-[#6A47FF] outline-none w-full"
             />
             <input
               type="password"
-              placeholder="Password"
               name="password"
+              placeholder="Password"
               className="p-2 bg-transparent border-b border-[#6A47FF] outline-none w-full"
             />
             <Button Type="submit" name={"Login"} />
