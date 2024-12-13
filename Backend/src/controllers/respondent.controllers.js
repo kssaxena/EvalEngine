@@ -6,7 +6,6 @@ import ApiResponse from "../utils/ApiResponse.js";
 const userRespondentRegister = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  console.log([name, email, password]);
   if (
     [name, email, password].some((field) => (field.trim() ?? "").length === 0)
   ) {
@@ -66,8 +65,6 @@ const userRespondentLogin = asyncHandler(async (req, res) => {
   if (!email || !password) {
     throw new ApiError(400, "Please provide email and password");
   }
-
-  console.log(email, password);
 
   const user = await UserRespondent.findOne({ email });
 

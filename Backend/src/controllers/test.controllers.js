@@ -16,7 +16,7 @@ const CreateTest = asyncHandler(async (req, res) => {
 
   const newTest = await QuestionPaper.create({
     title,
-    topic,
+    topic: topic || "",
     timing: {
       start: startTime,
       end: endTime,
@@ -90,6 +90,8 @@ const UpdateTestById = asyncHandler(async (req, res) => {
 const AddQuestionPaper = asyncHandler(async (req, res) => {
   const { questions } = req.body;
   const { testId } = req.params;
+
+  console.log(testId,questions )
 
   if (questions.length === 0) throw new ApiError(400, "Questions not found!");
 

@@ -14,6 +14,7 @@ app.use(cookieParser());
 //print function to ensure every step is executed
 app.use((req, res, next) => {
   console.log(`Received ${req.method} request with body:`, req.body);
+console.log(`Received ${req.method} request with params:`, req.params);
   next();
 });
 

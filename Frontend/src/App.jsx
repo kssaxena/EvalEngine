@@ -15,23 +15,21 @@ function App() {
   useEffect(() => {}, []);
 
   return (
-    <>
       <div className=" text-neutral-300 antialiased selection:bg-cyan-500 selection:text-cyan-900 bg-[#1F222B]">
         <Header />
         <Routes>
-          <Route path="/login-Student" element={<LoginStudent />} />
-          <Route path="/register-Student" element={<RegisterStudent />} />
+          <Route path="/login" element={<LoginStudent />} />
+          <Route path="/register" element={<RegisterStudent />} />
 
-          <Route path="/" element={<Hero />} />
+          <Route path="/" element={<Hero />} /> 
           <Route path="/questioner" element={<Questioner />} />
           <Route path="/respondent" element={<Respondent />} />
 
-          <Route path="/profile-student" element={<Profile />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/answers" element={<RespondentAnswerInput />} />
         </Routes>
         <Footer />
       </div>
-    </>
   );
 }
 
