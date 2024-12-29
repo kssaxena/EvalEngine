@@ -89,7 +89,7 @@ const RespondentAnswerInput = () => {
         onCopy={handleCopyPaste}
         onPaste={handleCopyPaste}
         placeholder="Type here"
-        className="w-full h-80 border rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#FBF6E9]"
+        className="w-full h-80 border rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 xbg-[#FBF6E9]"
         disabled={savedAnswers[currentQuestionIndex]}
       ></textarea>
       <div className="flex justify-between mt-4">

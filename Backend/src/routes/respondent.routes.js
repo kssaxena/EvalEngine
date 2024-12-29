@@ -1,12 +1,15 @@
 import express from "express";
 import {
-  userRespondentRegister,
-  userRespondentLogin,
+  RespondentRegister,
+  RespondentLogin,
+  refreshAccessToken,
 } from "../controllers/respondent.controllers.js";
 
 const router = express.Router();
 
-router.route("/register").post(userRespondentRegister);
-router.route("/login").post(userRespondentLogin);
+router.route("/register").post(RespondentRegister);
+router.route("/login").post(RespondentLogin);
+
+router.route("/student/re-login").post(refreshAccessToken);
 
 export default router;

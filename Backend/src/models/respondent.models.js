@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import Jwt from "jsonwebtoken";
 
-const userRespondentSchema = new mongoose.Schema(
+const respondentSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -27,7 +27,7 @@ const userRespondentSchema = new mongoose.Schema(
 
 //hashing password
 
-userRespondentSchema.pre("save", async function (next) {
+respondentSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
@@ -35,13 +35,13 @@ userRespondentSchema.pre("save", async function (next) {
 
 //function to compare password
 
-userRespondentSchema.methods.comparePassword = async function (password) {
+respondentSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
 //function to generate access token
 
-userRespondentSchema.methods.generateAccessToken = function () {
+respondentSchema.methods.generateAccessToken = function () {
   return Jwt.sign(
     {
       _id: this._id,
@@ -55,7 +55,7 @@ userRespondentSchema.methods.generateAccessToken = function () {
 };
 
 //method to generate refresh token for user
-userRespondentSchema.methods.generateRefreshToken = function () {
+respondentSchema.methods.generateRefreshToken = function () {
   return Jwt.sign(
     {
       _id: this._id,
@@ -67,7 +67,4 @@ userRespondentSchema.methods.generateRefreshToken = function () {
   );
 };
 
-export const UserRespondent = mongoose.model(
-  "UserRespondent",
-  userRespondentSchema
-);
+export const Respondent = mongoose.model("Respondent", respondentSchema);

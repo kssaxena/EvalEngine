@@ -1,9 +1,10 @@
 import ApiError from "../utils/ApiError.js";
-import { UserQuestioner } from "../models/questioner.models.js";
+import { Teacher } from "../models/teacher.models.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
+import jwt from "jsonwebtoken";
 
-const userQuestionerRegister = asyncHandler(async (req, res) => {
+const TeacherRegister = asyncHandler(async (req, res) => {
   const { name, email, password, collegeName } = req.body;
 
   if (
@@ -17,21 +18,19 @@ const userQuestionerRegister = asyncHandler(async (req, res) => {
   }
 
   // Check if user already exists
-  const existingUser = await UserQuestioner.findOne({ email });
+  const existingUser = await Teacher.findOne({ email });
   if (existingUser) {
     throw new ApiError(400, "User already exists");
   }
 
-  const newUser = await UserQuestioner.create({
+  const newUser = await Teacher.create({
     name,
     email,
     collegeName,
     password,
   });
 
-  const checkUser = await UserQuestioner.findById(newUser._id).select(
-    "-password"
-  );
+  const checkUser = await Teacher.findById(newUser._id).select("-password");
   if (!checkUser) {
     throw new ApiError(500, "Failed to create user");
   }
@@ -44,7 +43,7 @@ const userQuestionerRegister = asyncHandler(async (req, res) => {
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
-    const user = await UserQuestioner.findById(userId);
+    const user = await Teacher.findById(userId);
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
@@ -60,14 +59,14 @@ const generateAccessAndRefreshTokens = async (userId) => {
   }
 };
 
-const userQuestionerLogin = asyncHandler(async (req, res) => {
+const TeacherLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!(email || !password)) {
     throw new ApiError(400, "Please provide email and password");
   }
 
-  const user = await UserQuestioner.findOne({ email });
+  const user = await Teacher.findOne({ email });
 
   if (!user) throw new ApiError(404, "User not found");
 
@@ -79,7 +78,7 @@ const userQuestionerLogin = asyncHandler(async (req, res) => {
     user?._id
   );
 
-  const loggedInUser = await UserQuestioner.findById(user._id).select(
+  const loggedInUser = await Teacher.findById(user._id).select(
     "-password -refreshToken"
   );
 
@@ -119,32 +118,30 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET
     );
 
-    const user = await UserQuestioner.findById(decodedToken?._id);
+    const user = await Teacher.findById(decodedToken?._id);
 
     if (!user) {
       throw new ApiError(401, "Invalid Refresh token");
     }
 
-    if (incomingRefreshToken !== user?.refreshToken) {
-      throw new ApiError(401, "Refresh token is expired or used");
-    }
 
     const options = {
       httpOnly: true,
       secure: true,
     };
 
-    const { accessToken, newRefreshToken } =
-      await generateAccessAndRefreshTokens(user._id);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      user._id
+    );
 
     return res
       .status(200)
       .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", newRefreshToken, options)
+      .cookie("refreshToken", refreshToken, options)
       .json(
         new ApiResponse(
           200,
-          { accessToken, refreshToken: newRefreshToken },
+          { user, accessToken, refreshToken },
           "Access token refreshed"
         )
       );
@@ -154,8 +151,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 export {
-  userQuestionerRegister,
-  userQuestionerLogin,
+  TeacherRegister,
+  TeacherLogin,
   refreshAccessToken,
   generateAccessAndRefreshTokens,
 };

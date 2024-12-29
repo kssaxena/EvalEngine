@@ -26,7 +26,7 @@ const testSchema = new mongoose.Schema(
 
     questioner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "UserQuestioner",
+      ref: "Teacher",
       required: true,
     },
 

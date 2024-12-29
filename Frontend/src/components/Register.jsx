@@ -5,7 +5,7 @@ import { institutions } from "../utils/Constants";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { parseErrorMessage } from "../utils/ErrorMessageParser";
-import { setUser } from "../utils/UserSlice";
+import { clearUser, setUser } from "../utils/UserSlice";
 
 const Register = () => {
   // Variables
@@ -53,6 +53,7 @@ const Register = () => {
       const response = await FetchData(partialUrl, "post", formData);
       console.log(response);
       alert(response.data.message);
+      Dispatch(clearUser());
       Dispatch(setUser(response.data.data));
       Dispatch(setUser(userType));
 
