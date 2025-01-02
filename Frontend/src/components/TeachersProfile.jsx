@@ -60,11 +60,28 @@ export default function TeachersProfile() {
     FetchAllTests();
   }, [user]);
 
+  const handleCopyToClipboard = (testId) => {
+    navigator.clipboard
+      .writeText(testId)
+      .then(() => {
+        alert("Test ID copied to clipboard!");
+      })
+      .catch((error) => {
+        console.error("Failed to copy text: ", error);
+        alert("Failed to copy the Test ID.");
+      });
+  };
+
+  const handleLogout = () => {
+    navigate("/login");
+    alert("Logged out successfully");
+  };
+
   return (
     <div className="flex flex-col items-center w-screen mx-auto p-4 bg-[#1F222B] backdrop-blur-3xl  ">
-      <section className="w-5/6 h-[74vh]  rounded-2xl shadow-xl flex flex-col  items-center border bg-white/10  backdrop-blur-lg">
-        <div className="text-xl flex flex-col justify-center items-center px-4 py-1   mt-2 text-black shadow-sm shadow-white rounded-lg  bg-white/10 backdrop-blur-2xl">
-          <h1>
+      <section className="w-5/6 h-[74vh]  rounded-2xl shadow-xl flex flex-col  items-center border border-neutral-700  backdrop-blur-lg">
+        <div className="bg-neutral-700 text-xl flex flex-col justify-center items-center px-4 py-1  mt-2 rounded-lg backdrop-blur-2xl">
+          <h1 className="text-sm">
             Hello, Mr.{" "}
             <span className="text-2xl font-serif font-bold">
               {user[0]?.name}
@@ -73,107 +90,119 @@ export default function TeachersProfile() {
           <span className="text-sm font-thin">{user[0]?.email}</span>
         </div>
 
-        <div className="mt-8 flex  justify-around h-auto w-full">
-          <Button OnClick={() => setShowPopup(true)} name={"Create Test"} />
+        <div className="mt-8 flex  justify-around h-auto w-full items-center">
+          <div className=" flex flex-col items-center gap-10">
+            <Button OnClick={() => setShowPopup(true)} name={"Create Test"} />
 
-          {showPopup && (
-            <PopUp onClose={() => setShowPopup(false)}>
-              <form
-                ref={formRef}
-                onSubmit={handleSubmit}
-                className="bg-[#1F222B] p-5 rounded-lg w-96"
-              >
-                <h2 className="text-xl font-bold mb-4">Create Test</h2>
-                <div className="mb-3">
-                  <label className="block text-white mb-1">Title</label>
-                  <input
-                    type="text"
-                    name="title"
-                    className="w-full px-3 py-2 bg-gray-800 text-white rounded"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-white mb-1">Topic</label>
-                  <input
-                    type="text"
-                    name="topic"
-                    className="w-full px-3 py-2 bg-gray-800 text-white rounded"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-white mb-1">Start Time</label>
-                  <input
-                    type="datetime-local"
-                    name="startTime"
-                    className="w-full px-3 py-2 bg-gray-800 text-white rounded"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-white mb-1">End Time</label>
-                  <input
-                    type="datetime-local"
-                    name="endTime"
-                    className="w-full px-3 py-2 bg-gray-800 text-white rounded"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-white mb-1">Question Sets</label>
-                  <input
-                    type="text"
-                    name="sets"
-                    className="w-full px-3 py-2 bg-gray-800 text-white rounded"
-                    // required
-                  />
-                </div>
-                <div className="flex justify-end gap-3">
-                  <Button
-                    OnClick={() => setShowPopup(false)}
-                    className={`bg-gray-600`}
-                    name={"Cancel"}
-                  />
-                  <Button
-                    name={"Submit"}
-                    Type={"submit"}
-                    className={`hover:bg-green-500 duration-300 ease-in-out`}
-                  />
-                </div>
-              </form>
-            </PopUp>
-          )}
+            {showPopup && (
+              <PopUp onClose={() => setShowPopup(false)}>
+                <form
+                  ref={formRef}
+                  onSubmit={handleSubmit}
+                  className="bg-[#1F222B] p-5 rounded-lg w-96"
+                >
+                  <h2 className="text-xl font-bold mb-4">Create Test</h2>
+                  <div className="mb-3">
+                    <label className="block text-white mb-1">Title</label>
+                    <input
+                      type="text"
+                      name="title"
+                      className="w-full px-3 py-2 bg-gray-800 text-white rounded"
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-white mb-1">Topic</label>
+                    <input
+                      type="text"
+                      name="topic"
+                      className="w-full px-3 py-2 bg-gray-800 text-white rounded"
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-white mb-1">Start Time</label>
+                    <input
+                      type="datetime-local"
+                      name="startTime"
+                      className="w-full px-3 py-2 bg-gray-800 text-white rounded"
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-white mb-1">End Time</label>
+                    <input
+                      type="datetime-local"
+                      name="endTime"
+                      className="w-full px-3 py-2 bg-gray-800 text-white rounded"
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-white mb-1">
+                      Question Sets
+                    </label>
+                    <input
+                      type="text"
+                      name="sets"
+                      className="w-full px-3 py-2 bg-gray-800 text-white rounded"
+                      // required
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3">
+                    <Button
+                      OnClick={() => setShowPopup(false)}
+                      className={`bg-gray-600`}
+                      name={"Cancel"}
+                    />
+                    <Button
+                      name={"Submit"}
+                      Type={"submit"}
+                      className={`hover:bg-green-500 duration-300 ease-in-out`}
+                    />
+                  </div>
+                </form>
+              </PopUp>
+            )}
+
+            <Button name={"Log out"} OnClick={handleLogout} />
+          </div>
 
           {/* Upcoming Test Section */}
-          <div className="bg-white/20 border border-gray-200 w-1/2 h-96 m-2 rounded-lg backdrop-blur-2xl text-white   overflow-hidden">
+          <div className=" border border-gray-700 w-3/4 h-96 m-2 rounded-lg backdrop-blur-2xl text-white   overflow-hidden">
             <h3 className="text-lg text-center font-semibold  ">
               Created tests
             </h3>
-            <div className="h-[47vh]  overflow-y-scroll overflow-x-hidden">
+            <div className="h-[47vh] w-full overflow-y-scroll overflow-x-hidden">
               {tests?.map((element, index) => (
-                <Link
-                  to={`/add-question/${element._id}`}
-                  key={index}
-                  className="group flex justify-between items-center px-4  mx-5  my-4 h-8 rounded-xl bg-[#6A47FF] drop-shadow-lg hover:scale-x-105 hover:scale-y-110 hover:drop-shadow-2xl  transition duration-200 ease-in-out cursor-pointer"
-                >
-                  <span className="">{index + 1}</span>
-                  <h2 className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-                    {element.title}
-                  </h2>
-                  <p>
-                    on{" "}
-                    <span className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-                      {formatDate(element.timing.start)}
-                    </span>
-                  </p>
-                  <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-                    from <span>{formatTime(element.timing.start)}</span>
-                  </p>
-                  <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-                    to <span>{formatTime(element.timing.end)}</span>
-                  </p>
-                </Link>
+                <div className="flex justify-center items-center w-full">
+                  <Link
+                    to={`/add-question/${element._id}`}
+                    key={index}
+                    className=" flex justify-between items-center px-4  mx-5  my-4 h-8 rounded-xl bg-[#6A47FF] drop-shadow-lg hover:scale-y-110 hover:drop-shadow-2xl  transition duration-200 ease-in-out cursor-pointer w-3/4"
+                  >
+                    <span className="">{index + 1}</span>
+                    <h2 className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
+                      {element.title}
+                    </h2>
+                    <p>
+                      on{" "}
+                      <span className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
+                        {formatDate(element.timing.start)}
+                      </span>
+                    </p>
+                    <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
+                      from <span>{formatTime(element.timing.start)}</span>
+                    </p>
+                    <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
+                      to <span>{formatTime(element.timing.end)}</span>
+                    </p>
+                  </Link>
+                  <Button
+                    name={"Copy test Id"}
+                    OnClick={() => handleCopyToClipboard(element._id)}
+                  />
+                </div>
               ))}
             </div>
           </div>

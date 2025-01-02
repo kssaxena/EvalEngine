@@ -56,7 +56,11 @@ const Header = () => {
         <div className="flex gap-5">
           <Button OnClick={handleClickProfile} name={user[0]?.name} />
           {user[1] === "student" ? (
-            <Button OnClick={() => Navigate("/join-test")} name={"Join Test"} />
+            <Button
+              OnClick={() => Navigate("/respondent")}
+              // OnClick={() => Navigate("/answers-page/:testId")}
+              name={"Join Test"}
+            />
           ) : (
             <Button OnClick={() => setShowPopup(true)} name={"Create Test"} />
           )}
