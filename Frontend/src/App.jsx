@@ -31,6 +31,7 @@ function App() {
       }
       try {
         if (userType === "student") {
+
           const response = await FetchData(
             "respondent/student/re-login",
             "post",
@@ -65,7 +66,7 @@ function App() {
           Dispatch(setUser(response.data.data.user));
           Dispatch(setUser(userType));
         }
-      } catch {
+      } catch(error) {
         console.log(error);
         alert(parseErrorMessage(error.response.data));
         window.location.href = "/login";

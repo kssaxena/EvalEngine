@@ -52,6 +52,12 @@ const Register = () => {
     try {
       const response = await FetchData(partialUrl, "post", formData);
       console.log(response);
+
+      // Storing the tokens into browser's local storage
+      localStorage.clear(); // will clear the all the data from localStorage
+      localStorage.setItem("accessToken", response.data.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.data.refreshToken);
+      localStorage.setItem("userType", userType);
       alert(response.data.message);
       Dispatch(clearUser());
       Dispatch(setUser(response.data.data));
