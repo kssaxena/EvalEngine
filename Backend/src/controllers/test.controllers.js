@@ -4,6 +4,8 @@ import { Test } from "../models/Test.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { Answer } from "../models/Answer.model.js";
+import { getRandomIndex } from "../utils/UtilityFunction.js";
 
 const CreateTest = asyncHandler(async (req, res) => {
   const { title, topic, startTime, endTime } = req.body;
@@ -209,6 +211,82 @@ const DeleteQuestionPaper = asyncHandler(async (req, res) => {
   }
 });
 
+const GetQuestionPaper = asyncHandler(async (req, res) => {
+  const { testId } = req.params;
+
+  if (!testId) throw new ApiError(400, "Please provide test id!");
+
+  const test = await Test.findById(testId);
+  if (!test) throw new ApiError(400, "Test not found!");
+
+  const randomSet = getRandomIndex(test.sets);
+  const testSet = await QuestionPaper.findById(test.sets[randomSet]);
+  if (!testSet)
+    throw new ApiError(500, "Some internal error in finding random sets!");
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, testSet, "Question paper fetched successfully!")
+    );
+});
+
+const SubmitAnswersResponse = asyncHandler(async (req, res) => {
+  const { answers, setId, testId } = req.body;
+  const { studentId } = req.params;
+
+  if (!studentId) throw new ApiError(400, "Please provide student id!");
+
+  const student = await Respondent.findById(studentId);
+  if (!student) throw new ApiError(400, "Student not found!");
+
+  if (!answers || answers.length === 0) {
+    throw new ApiError(400, "Please provide answers!");
+  }
+
+  if (!setId || !testId)
+    throw new ApiError(400, "Please provide test id and set id!");
+
+  const test = await Test.findById(testId);
+  if (!test)
+    throw new ApiError(400, "Provider test id is not valid! Please try again");
+
+  const set = await Set.findById(setId);
+  if (!set)
+    throw new ApiError(400, "Provider set id is not valid! Please try again");
+
+  const answer = await Answer.create({
+    answers,
+    questionPaper: set._id,
+    test: test._id,
+    responder: studentId,
+  });
+
+  if (!answer)
+    throw new ApiError(
+      500,
+      "Failed to create answer due to some internal error! Please try again"
+    );
+
+  const updatedTest = await Test.findByIdAndUpdate(
+    testId,
+    {
+      $push: { answer: answer._id },
+    },
+    { new: true }
+  );
+
+  if (!updatedTest)
+    throw new ApiError(
+      500,
+      "Failed to submit answers due to some internal error! Please try again"
+    );
+
+  res
+    .status(201)
+    .json(new ApiResponse(201, {}, "Your answer is updated successfully 😊"));
+});
+
 export {
   CreateTest,
   GetMyTests,
@@ -216,6 +294,8 @@ export {
   UpdateTestById,
   DeleteTestById,
   AddQuestionPaper,
-  UpdateQuestionPaper,
+  GetQuestionPaper,
   DeleteQuestionPaper,
+  UpdateQuestionPaper,
+  SubmitAnswersResponse,
 };

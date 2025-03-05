@@ -36,6 +36,13 @@ const testSchema = new mongoose.Schema(
         ref: "QuestionPaper",
       },
     ],
+
+    answer: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Answer",
+      },
+    ],
   },
   {
     timestamps: true,
