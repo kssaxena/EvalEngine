@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import Jwt from "jsonwebtoken";
 
-const respondentSchema = new mongoose.Schema(
+const teacherSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -14,11 +14,23 @@ const respondentSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    password: {
+    collegeName: {
       type: String,
-      trim: true,
       required: true,
     },
+    question_preference: {
+      type: String,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    allTests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Test",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -27,7 +39,7 @@ const respondentSchema = new mongoose.Schema(
 
 //hashing password
 
-respondentSchema.pre("save", async function (next) {
+teacherSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
@@ -35,13 +47,13 @@ respondentSchema.pre("save", async function (next) {
 
 //function to compare password
 
-respondentSchema.methods.comparePassword = async function (password) {
+teacherSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
 //function to generate access token
 
-respondentSchema.methods.generateAccessToken = function () {
+teacherSchema.methods.generateAccessToken = function () {
   return Jwt.sign(
     {
       _id: this._id,
@@ -55,7 +67,7 @@ respondentSchema.methods.generateAccessToken = function () {
 };
 
 //method to generate refresh token for user
-respondentSchema.methods.generateRefreshToken = function () {
+teacherSchema.methods.generateRefreshToken = function () {
   return Jwt.sign(
     {
       _id: this._id,
@@ -67,4 +79,4 @@ respondentSchema.methods.generateRefreshToken = function () {
   );
 };
 
-export const Respondent = mongoose.model("Respondent", respondentSchema);
+export const Teacher = mongoose.model("Teacher", teacherSchema);

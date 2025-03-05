@@ -5,7 +5,7 @@ import { institutions } from "../utils/Constants";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { parseErrorMessage } from "../utils/ErrorMessageParser";
-import { setUser } from "../utils/UserSlice";
+import { clearUser, setUser } from "../utils/UserSlice";
 
 const Register = () => {
   // Variables
@@ -52,7 +52,14 @@ const Register = () => {
     try {
       const response = await FetchData(partialUrl, "post", formData);
       console.log(response);
+
+      // Storing the tokens into browser's local storage
+      localStorage.clear(); // will clear the all the data from localStorage
+      localStorage.setItem("accessToken", response.data.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.data.refreshToken);
+      localStorage.setItem("userType", userType);
       alert(response.data.message);
+      Dispatch(clearUser());
       Dispatch(setUser(response.data.data));
       Dispatch(setUser(userType));
 

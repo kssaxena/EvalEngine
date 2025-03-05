@@ -1,11 +1,14 @@
 import React from "react";
 import ProfileStudent from "../ProfileStudent";
+import { useSelector } from "react-redux";
+import TeachersProfile from "../TeachersProfile";
 
 const Profile = () => {
+  const user = useSelector((store) => store.user.user);
+
   return (
     <div>
-      {/* <h1>Hello Profile</h1> */}
-      <ProfileStudent />
+      {user[1] === "student" ? <ProfileStudent /> : <TeachersProfile />}
     </div>
   );
 };

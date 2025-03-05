@@ -3,7 +3,7 @@ import Button from "../utils/Button";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FetchData } from "../utils/FetchFromApi";
-import { setUser } from "../utils/UserSlice";
+import { clearUser, setUser } from "../utils/UserSlice";
 import { parseErrorMessage } from "../utils/ErrorMessageParser";
 
 const LoginStudent = () => {
@@ -35,6 +35,7 @@ const LoginStudent = () => {
       localStorage.setItem("userType", userType);
 
       alert(response.data.message);
+      Dispatch(clearUser());
       Dispatch(setUser(response.data.data.user));
       Dispatch(setUser(userType));
       Navigate("/");

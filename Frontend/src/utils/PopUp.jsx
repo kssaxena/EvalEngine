@@ -14,7 +14,7 @@ const PopUp = ({ children, onClose, onClick }) => {
     <div
       ref={modelRef}
       onClick={closeModel}
-      className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center"
+      className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50"
     >
       <div className=" flex flex-col gap-5 text-white">
         <div className="place-self-end flex flex-row-reverse gap-5">

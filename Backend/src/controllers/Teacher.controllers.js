@@ -1,15 +1,14 @@
 import ApiError from "../utils/ApiError.js";
-import { Respondent } from "../models/respondent.models.js";
+import { Teacher } from "../models/teacher.models.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 
-
-const RespondentRegister = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+const TeacherRegister = asyncHandler(async (req, res) => {
+  const { name, email, password, collegeName } = req.body;
 
   if (
-    [name, email, password].some((field) => (field.trim() ?? "").length === 0)
+    [name, email, collegeName, password].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "All fields are Required");
   }
@@ -19,20 +18,19 @@ const RespondentRegister = asyncHandler(async (req, res) => {
   }
 
   // Check if user already exists
-  const existingUser = await Respondent.findOne({ email });
+  const existingUser = await Teacher.findOne({ email });
   if (existingUser) {
     throw new ApiError(400, "User already exists");
   }
 
-  const newUser = await Respondent.create({
+  const newUser = await Teacher.create({
     name,
     email,
+    collegeName,
     password,
   });
 
-  const checkUser = await Respondent.findById(newUser._id).select(
-    "-password"
-  );
+  const checkUser = await Teacher.findById(newUser._id).select("-password");
   if (!checkUser) {
     throw new ApiError(500, "Failed to create user");
   }
@@ -45,7 +43,7 @@ const RespondentRegister = asyncHandler(async (req, res) => {
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
-    const user = await Respondent.findById(userId);
+    const user = await Teacher.findById(userId);
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
@@ -61,14 +59,14 @@ const generateAccessAndRefreshTokens = async (userId) => {
   }
 };
 
-const RespondentLogin = asyncHandler(async (req, res) => {
+const TeacherLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
+  if (!(email || !password)) {
     throw new ApiError(400, "Please provide email and password");
   }
 
-  const user = await Respondent.findOne({ email });
+  const user = await Teacher.findOne({ email });
 
   if (!user) throw new ApiError(404, "User not found");
 
@@ -80,7 +78,7 @@ const RespondentLogin = asyncHandler(async (req, res) => {
     user?._id
   );
 
-  const loggedInUser = await Respondent.findById(user._id).select(
+  const loggedInUser = await Teacher.findById(user._id).select(
     "-password -refreshToken"
   );
 
@@ -120,11 +118,12 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET
     );
 
-    const user = await Respondent.findById(decodedToken?._id);
+    const user = await Teacher.findById(decodedToken?._id);
 
     if (!user) {
       throw new ApiError(401, "Invalid Refresh token");
     }
+
 
     const options = {
       httpOnly: true,
@@ -142,7 +141,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          {user, accessToken, refreshToken },
+          { user, accessToken, refreshToken },
           "Access token refreshed"
         )
       );
@@ -152,8 +151,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 export {
-  RespondentRegister,
-  generateAccessAndRefreshTokens,
-  RespondentLogin,
+  TeacherRegister,
+  TeacherLogin,
   refreshAccessToken,
+  generateAccessAndRefreshTokens,
 };
