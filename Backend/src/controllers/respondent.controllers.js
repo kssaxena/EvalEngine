@@ -1,9 +1,9 @@
 import ApiError from "../utils/ApiError.js";
-import { Respondent } from "../models/respondent.models.js";
+import { Respondent } from "../models/respondent.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-
+// import { openAI } from "../app.js";
 
 const RespondentRegister = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -30,9 +30,7 @@ const RespondentRegister = asyncHandler(async (req, res) => {
     password,
   });
 
-  const checkUser = await Respondent.findById(newUser._id).select(
-    "-password"
-  );
+  const checkUser = await Respondent.findById(newUser._id).select("-password");
   if (!checkUser) {
     throw new ApiError(500, "Failed to create user");
   }
@@ -83,6 +81,12 @@ const RespondentLogin = asyncHandler(async (req, res) => {
   const loggedInUser = await Respondent.findById(user._id).select(
     "-password -refreshToken"
   );
+
+  // const answer = await openAI.chat.completions.create({
+  //   model: "gpt-4o-mini",
+  //   store: true,
+  //   messages: [{ role: "user", content: "Tell me what do you know about me." }],
+  // });
 
   const options = {
     httpOnly: true,
@@ -142,7 +146,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          {user, accessToken, refreshToken },
+          { user, accessToken, refreshToken },
           "Access token refreshed"
         )
       );

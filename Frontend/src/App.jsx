@@ -68,7 +68,7 @@ function App() {
         }
       } catch(error) {
         console.log(error);
-        alert(parseErrorMessage(error.response.data));
+        // alert(parseErrorMessage(error.response.data));
         window.location.href = "/login";
       }
     };

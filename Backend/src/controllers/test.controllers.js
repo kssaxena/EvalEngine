@@ -1,4 +1,4 @@
-import { Teacher } from "../models/teacher.models.js";
+import { Teacher } from "../models/teacher.model.js";
 import { QuestionPaper } from "../models/questionPaper.model.js";
 import { Test } from "../models/Test.model.js";
 import ApiError from "../utils/ApiError.js";

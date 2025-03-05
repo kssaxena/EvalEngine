@@ -16,6 +16,7 @@
     "evalengine"
   ],
   "dependencies": {
+    "@google/generative-ai": "^0.23.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -23,7 +24,8 @@
     "express": "^4.19.2",
     "http-server": "^0.12.3",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.1"
+    "mongoose": "^8.5.1",
+    "openai": "^4.82.0"
   },
   "devDependencies": {
     "json-server": "^0.16.3",

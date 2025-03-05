@@ -1,5 +1,5 @@
 import ApiError from "../utils/ApiError.js";
-import { Teacher } from "../models/teacher.models.js";
+import { Teacher } from "../models/teacher.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
