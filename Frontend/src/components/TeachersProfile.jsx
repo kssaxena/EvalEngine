@@ -72,11 +72,6 @@ export default function TeachersProfile() {
       });
   };
 
-  const handleLogout = () => {
-    navigate("/login");
-    alert("Logged out successfully");
-  };
-
   return (
     <div className="flex flex-col items-center w-screen mx-auto p-4 bg-[#1F222B] backdrop-blur-3xl  ">
       <section className="w-5/6 h-[74vh]  rounded-2xl shadow-xl flex flex-col  items-center border border-neutral-700  backdrop-blur-lg">
@@ -164,8 +159,6 @@ export default function TeachersProfile() {
                 </form>
               </PopUp>
             )}
-
-            <Button name={"Log out"} OnClick={handleLogout} />
           </div>
 
           {/* Upcoming Test Section */}

@@ -2,15 +2,20 @@ import React, { useRef, useState } from "react";
 import Button from "../utils/Button";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { parseErrorMessage } from "../utils/ErrorMessageParser";
 import { FetchData } from "../utils/FetchFromApi";
 import PopUp from "../utils/PopUp";
+import { clearUser } from "../utils/UserSlice";
+import { Info } from "lucide-react";
+import AboutInstruction from "./About";
 
 const Header = () => {
+  const Dispatch = useDispatch();
   const Navigate = useNavigate();
   const user = useSelector((store) => store.user.user);
   const [showPopup, setShowPopup] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
   const formRef = useRef(null);
 
   const handleSubmit = async (e) => {
@@ -63,6 +68,37 @@ const Header = () => {
             />
           ) : (
             <Button OnClick={() => setShowPopup(true)} name={"Create Test"} />
+          )}
+        </div>
+      )}
+
+      {user.length > 0 && (
+        <div className="flex gap-5">
+          <Button OnClick={() => Navigate("/")} name={"Home"} />
+          <Button
+            name={"Log Out"}
+            OnClick={() => {
+              Dispatch(clearUser());
+              localStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+              alert("You are logged out! Please log in.");
+              setTimeout(() => Navigate("/login"), 100);
+              console.log(localStorage.getItem("refreshToken"));
+            }}
+          />
+          <Button
+            name={<Info />}
+            className={"rounded-full bg-transparent"}
+            OnClick={() => setShowInstructions(true)}
+          />
+
+          {showInstructions && (
+            <div>
+              <button
+                OnClick={() => setShowInstructions(false)}
+              ></button>
+              <AboutInstruction />
+            </div>
           )}
         </div>
       )}

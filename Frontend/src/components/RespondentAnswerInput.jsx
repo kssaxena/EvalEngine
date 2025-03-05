@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import Button from "../utils/Button";
+import { useParams } from "react-router-dom";
 
 const RespondentAnswerInput = () => {
+  const testId = useParams();
+
   const questions = [
     "What is your name?",
     "Write a code for printing prime number.",
     "What motivates you to achieve your goals?",
   ];
+
+  // console.log(testId);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState(Array(questions.length).fill(""));
@@ -67,7 +72,7 @@ const RespondentAnswerInput = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 h-screen">
       {alertMessage && (
         <div className="w-1/4 flex justify-center items-center absolute mb-4 p-3 bg-blue-100 text-blue-800 rounded">
           {alertMessage}
@@ -77,7 +82,7 @@ const RespondentAnswerInput = () => {
         <h2 className="text-xl font-bold mb-2">
           Question {currentQuestionIndex + 1}:
         </h2>
-        <p className="text-lg">{questions[currentQuestionIndex]}</p>
+        <p className="text-lg select-none">{questions[currentQuestionIndex]}</p>
       </div>
       <label htmlFor="answer" className="block text-lg font-semibold mb-2">
         Answer below:
@@ -89,7 +94,7 @@ const RespondentAnswerInput = () => {
         onCopy={handleCopyPaste}
         onPaste={handleCopyPaste}
         placeholder="Type here"
-        className="w-full h-80 border rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 xbg-[#FBF6E9]"
+        className="w-full h-96 border rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 xbg-[#FBF6E9]"
         disabled={savedAnswers[currentQuestionIndex]}
       ></textarea>
       <div className="flex justify-between mt-4">
