@@ -5,7 +5,9 @@ import {
   DeleteQuestionPaper,
   DeleteTestById,
   GetMyTests,
+  GetQuestionPaper,
   GetTestById,
+  SubmitAnswersResponse,
   UpdateQuestionPaper,
   UpdateTestById,
 } from "../controllers/test.controllers.js";
@@ -28,5 +30,10 @@ router.route("/get-test-set/:testId").get(GetTestById);
 router.route("/add-sets/:testId").post(AddQuestionPaper);
 router.route("/update-sets/:testId/:setId").post(UpdateQuestionPaper);
 router.route("/delete-sets/:testId/:setId").post(DeleteQuestionPaper);
+router.route("/get-question-paper/:testId").get(GetQuestionPaper);
+
+
+// Student responses routes
+router.route("/submit-response/:studentId").post(SubmitAnswersResponse);
 
 export default router;
