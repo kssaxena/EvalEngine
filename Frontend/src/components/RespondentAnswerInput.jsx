@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "../utils/Button";
 import { useParams } from "react-router-dom";
 import { FetchData } from "../utils/FetchFromApi";
@@ -6,10 +6,9 @@ import { useSelector } from "react-redux";
 
 const RespondentAnswerInput = () => {
   const user = useSelector((store) => store.user.user);
-  // console.log(user);
   const { testId } = useParams();
-  // console.log(testId);
 
+  const answerRef = useRef(null);
   const [questions, setQuestions] = useState([]);
   const fetchQuestions = async () => {
     try {
@@ -24,30 +23,20 @@ const RespondentAnswerInput = () => {
       // alert("error.response.data");
     }
   };
-  // fetchQuestions();
-
   useEffect(() => {
     fetchQuestions();
   }, []);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState(Array(questions.length).fill(""));
-  const [savedAnswers, setSavedAnswers] = useState(
-    Array(questions.length).fill(false)
-  );
+  const [answers, setAnswers] = useState([]);
+  // const [savedAnswers, setSavedAnswers] = useState(
+  //   Array(questions.length).fill(false)
+  // );
   const [alertMessage, setAlertMessage] = useState("");
 
   const showTemporaryAlert = (message) => {
     setAlertMessage(message);
     setTimeout(() => setAlertMessage(""), 2000);
-  };
-
-  const handleChange = (e) => {
-    if (!savedAnswers[currentQuestionIndex]) {
-      const updatedAnswers = [...answers];
-      updatedAnswers[currentQuestionIndex] = e.target.value;
-      setAnswers(updatedAnswers);
-    }
   };
 
   const handleCopyPaste = (e) => {
@@ -58,6 +47,7 @@ const RespondentAnswerInput = () => {
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+      answerRef.current.value = answers[currentQuestionIndex - 1];
     } else {
       showTemporaryAlert("You have completed all the questions.");
     }
@@ -66,20 +56,29 @@ const RespondentAnswerInput = () => {
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
+      answerRef.current.value = answers[currentQuestionIndex - 1];
+      updateAnswerAtIndex(currentQuestionIndex, answerRef.current.value);
+    } else {
+      alert("It's the first question!!");
     }
   };
 
+  const updateAnswerAtIndex = (index, newValue) => {
+    setAnswers((prevAnswers) => {
+      const updatedAnswers = [...prevAnswers];
+      updatedAnswers[index] = newValue;
+      return updatedAnswers;
+    });
+  };
   const handleSaveAnswer = () => {
-    if (answers[currentQuestionIndex].trim() === "Na") {
-      showTemporaryAlert("Writing answer is compulsory");
+    const ans = answerRef.current.value;
+    if (ans) {
+      updateAnswerAtIndex(currentQuestionIndex, ans);
+      handleNextQuestion();
+      answerRef.current.value = "";
+      console.log(answers);
     } else {
-      const updatedSavedAnswers = [...savedAnswers];
-      updatedSavedAnswers[currentQuestionIndex] = true;
-      setSavedAnswers(updatedSavedAnswers);
-      showTemporaryAlert("Answer saved. You can no longer edit this answer.");
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      }
+      alert("These is nothing to save!");
     }
   };
 
@@ -105,15 +104,15 @@ const RespondentAnswerInput = () => {
         Answer below:
       </label>
       <textarea
+        ref={answerRef}
         id="answer"
-        value={answers[currentQuestionIndex]}
-        onChange={handleChange}
         onCopy={handleCopyPaste}
         onPaste={handleCopyPaste}
         placeholder="Type here"
-        className="w-full h-96 border rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 xbg-[#FBF6E9]"
-        disabled={savedAnswers[currentQuestionIndex]}
-      ></textarea>
+        className="w-full h-96 border rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#FBF6E9]"
+        disabled={answers[currentQuestionIndex] != undefined}
+      />
+
       <div className="flex justify-between mt-4">
         <Button
           name="Previous Question"
@@ -126,7 +125,13 @@ const RespondentAnswerInput = () => {
           name="Save and Proceed"
           OnClick={handleSaveAnswer}
           Type="button"
-          disabled={savedAnswers[currentQuestionIndex]}
+          disabled={() => answers[currentQuestionIndex] != undefined}
+        />
+        <Button
+          className={`hover:bg-green-500 duration-300 ease-in-out`}
+          name="Console"
+          OnClick={() => console.log(answers)}
+          Type="button"
         />
         {currentQuestionIndex === questions.length - 1 ? (
           <Button
@@ -148,3 +153,5 @@ const RespondentAnswerInput = () => {
 };
 
 export default RespondentAnswerInput;
+
+

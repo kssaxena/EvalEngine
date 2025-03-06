@@ -12,6 +12,7 @@ import RespondentAnswerInput from "./components/RespondentAnswerInput";
 import { FetchData } from "./utils/FetchFromApi";
 import { clearUser, setUser } from "./utils/UserSlice";
 import { useDispatch } from "react-redux";
+import QuestionAnswerPage from "./components/RespondentAnswer";
 
 function App() {
   const Dispatch = useDispatch();
@@ -40,7 +41,6 @@ function App() {
         Dispatch(clearUser());
         Dispatch(setUser(response.data.data.user));
         Dispatch(setUser(userType));
-
       } catch (error) {
         console.log(error);
       }
@@ -61,10 +61,7 @@ function App() {
         <Route path="/respondent" element={<Respondent />} />
 
         <Route path="/profile" element={<Profile />} />
-        <Route
-          path="/answers-page/:testId"
-          element={<RespondentAnswerInput />}
-        />
+        <Route path="/answers-page/:testId" element={<QuestionAnswerPage />} />
       </Routes>
       <Footer />
     </div>
