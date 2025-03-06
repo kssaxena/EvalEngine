@@ -15,7 +15,7 @@ const Header = () => {
   const Navigate = useNavigate();
   const user = useSelector((store) => store.user.user);
   const [showPopup, setShowPopup] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(false);
   const formRef = useRef(null);
 
   const handleSubmit = async (e) => {
@@ -79,6 +79,7 @@ const Header = () => {
             name={"Log Out"}
             OnClick={() => {
               Dispatch(clearUser());
+              localStorage.removeItem("userType");
               localStorage.removeItem("accessToken");
               localStorage.removeItem("refreshToken");
               alert("You are logged out! Please log in.");
@@ -94,9 +95,7 @@ const Header = () => {
 
           {showInstructions && (
             <div>
-              <button
-                OnClick={() => setShowInstructions(false)}
-              ></button>
+              <button OnClick={() => setShowInstructions(false)}></button>
               <AboutInstruction />
             </div>
           )}

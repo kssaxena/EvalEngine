@@ -1,17 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../utils/Button";
 import { useParams } from "react-router-dom";
+import { FetchData } from "../utils/FetchFromApi";
+import { useSelector } from "react-redux";
 
 const RespondentAnswerInput = () => {
-  const testId = useParams();
-
-  const questions = [
-    "What is your name?",
-    "Write a code for printing prime number.",
-    "What motivates you to achieve your goals?",
-  ];
-
+  const user = useSelector((store) => store.user.user);
+  // console.log(user);
+  const { testId } = useParams();
   // console.log(testId);
+
+  const [questions, setQuestions] = useState([]);
+  const fetchQuestions = async () => {
+    try {
+      const response = await FetchData(
+        `test/get-question-paper/${testId}`,
+        "get"
+      );
+      console.log(response);
+      setQuestions(response.data.data.questions);
+    } catch (error) {
+      console.error("error", error);
+      // alert("error.response.data");
+    }
+  };
+  // fetchQuestions();
+
+  useEffect(() => {
+    fetchQuestions();
+  }, []);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState(Array(questions.length).fill(""));

@@ -1,5 +1,5 @@
 import ApiError from "../utils/ApiError.js";
-import { Respondent } from "../models/respondent.model.js";
+import  Respondent from "../models/respondent.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";

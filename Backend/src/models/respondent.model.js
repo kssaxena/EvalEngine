@@ -67,4 +67,6 @@ respondentSchema.methods.generateRefreshToken = function () {
   );
 };
 
-export const Respondent = mongoose.model("Respondent", respondentSchema);
+const Respondent =
+  mongoose.models.Respondent || mongoose.model("Respondent", respondentSchema);
+export default Respondent;

@@ -2,12 +2,13 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 // import { Configuration, OpenAIApi } from "openai";
-import {OpenAI} from "openai"
+import { OpenAI } from "openai";
 
 const app = express();
 
 const corsOptions = {
-  origin: "*", // Allow only this origin
+  // origin: "*", // Allow only this origin
+  origin: "http://localhost:5173", // Allow only this origin
   credentials: true, // Allow credentials (cookies, headers)
   methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
   allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
@@ -32,6 +33,9 @@ app.use(cookieParser());
 app.use((req, res, next) => {
   console.log(`Received ${req.method} request with body:`, req.body);
   console.log(`Received ${req.method} request with params:`, req.params);
+  // console.log(req.headers.authorization);
+  // console.log("Received Token:", token);
+
   next();
 });
 
@@ -43,4 +47,4 @@ app.use("/api/v1/respondent", respondentRoute);
 app.use("/api/v1/questioner", TeachersRoute);
 app.use("/api/v1/test", testRoutes);
 
-export { app,  };
+export { app };

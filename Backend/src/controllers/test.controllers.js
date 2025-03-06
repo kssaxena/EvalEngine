@@ -221,6 +221,7 @@ const GetQuestionPaper = asyncHandler(async (req, res) => {
 
   const randomSet = getRandomIndex(test.sets);
   const testSet = await QuestionPaper.findById(test.sets[randomSet]);
+  console.log(testSet)
   if (!testSet)
     throw new ApiError(500, "Some internal error in finding random sets!");
 

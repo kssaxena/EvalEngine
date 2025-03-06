@@ -10,6 +10,6 @@ const router = express.Router();
 router.route("/register").post(TeacherRegister);
 router.route("/login").post(TeacherLogin);
 
-router.route("/teacher/re-login").post(refreshAccessToken);
+router.route("/teacher/re-login").post( refreshAccessToken);
 
 export default router;
