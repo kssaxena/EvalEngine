@@ -162,9 +162,15 @@ const getAllTests = asyncHandler(async (req, res) => {
 
   if (!studentId) throw new ApiError(400, "Please provide student id!");
 
-  const student = await Respondent.findById(studentId).populate(
-    "attemptedTest"
-  );
+ const student = await Respondent.findById(studentId)
+   .populate({
+     path: "attemptedTest", // Populate tests attempted by the student
+     populate: {
+       path: "answer", // Populate answers inside each test
+       model: "Answer",
+     },
+   })
+   .exec();
   if (!student) throw new ApiError(400, "Student not found!");
 
   res

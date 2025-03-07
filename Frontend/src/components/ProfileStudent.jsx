@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Button from "../utils/Button";
 import { FetchData } from "../utils/FetchFromApi";
+import StudentTestEvaluation from "./pages/RespondentTestResult";
 
 const ProfileStudent = () => {
   const user = useSelector((store) => store.user.user);
@@ -16,7 +17,7 @@ const ProfileStudent = () => {
         "get"
       );
       console.log(response);
-      setTests(response.data.data);
+      setTests(response.data.data.allTests);
     } catch (error) {
       console.error(error);
     }
@@ -25,27 +26,34 @@ const ProfileStudent = () => {
   useEffect(() => {
     getAllTests();
   }, []);
+  const [showPopup, setShowPopup] = useState(false);
 
   const ListElement = ({ element, index }) => {
     return (
-      <div className="group flex justify-between items-center px-4  mx-5  my-4 h-8 rounded-xl bg-[#6A47FF] drop-shadow-lg hover:scale-105 hover:drop-shadow-2xl  hover:h-12 transition duration-200 ease-in-out cursor-pointer">
-        <span className="">{index + 1}</span>
-        <h2 className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-          {tests?.name}
-        </h2>
-        <p>
+      <div className="w-full">
+        <button
+          onClick={() => setShowPopup(true)}
+          className="group flex justify-between items-center px-4    my-4 h-8 rounded-xl bg-[#6A47FF] drop-shadow-lg hover:scale-105 hover:drop-shadow-2xl  hover:h-12 transition duration-200 ease-in-out cursor-pointer w-full"
+        >
+          <span className="">{index + 1}</span>
+          <h2 className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110 text-center w-full">
+            {element?.title}
+          </h2>
+          {/* <p>
           on{" "}
           <span className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-            {tests?.date}
+            {element?.date}
           </span>{" "}
           2023
+        </p> */}
+          {/* <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
+          from <span>{element?.from}</span>
         </p>
         <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-          from <span>{tests?.from}</span>
-        </p>
-        <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-          to <span>{tests?.to}</span>
-        </p>
+          to <span>{element?.to}</span>
+        </p> */}
+        </button>
+        {showPopup && <StudentTestEvaluation />}
       </div>
     );
   };
@@ -86,11 +94,9 @@ const ProfileStudent = () => {
               Completed Test
             </h3>
             <div className="h-[47vh]  overflow-y-scroll overflow-x-hidden">
-              {Array(3)
-                .fill(0)
-                .map((element, index) => (
-                  <ListElement key={index} index={index} element={element} />
-                ))}
+              {tests.map((element, index) => (
+                <ListElement key={index} index={index} element={element} />
+              ))}
             </div>
           </div>
         </div>
