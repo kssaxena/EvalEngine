@@ -24,6 +24,14 @@ const answerSchema = new mongoose.Schema(
       ref: "Test",
       required: true,
     },
+    score: {
+      grade: {
+        type: String,
+      },
+      explanation: {
+        type: String,
+      },
+    },
   },
   {
     timestamps: true,

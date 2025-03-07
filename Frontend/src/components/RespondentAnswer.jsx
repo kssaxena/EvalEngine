@@ -71,9 +71,9 @@ export default function QuestionAnswerPage() {
 
   const user = useSelector((store) => store.user.user);
   console.log(user);
+  const [questionPaperId, setQuestionPaperId] = useState();
   const [questions, setQuestions] = useState([]);
   const { testId } = useParams();
-  // const [questions] = useState(sampleQuestions);
   const [answers, setAnswers] = useState(Array(questions.length).fill(""));
   const [savedAnswers, setSavedAnswers] = useState(
     Array(questions.length).fill(false)
@@ -90,12 +90,14 @@ export default function QuestionAnswerPage() {
         "get"
       );
       console.log(response);
+      setQuestionPaperId(response.data.data._id);
       setQuestions(response.data.data.questions);
     } catch (error) {
       console.error("error", error);
-      // alert("error.response.data");
     }
   };
+
+
   useEffect(() => {
     fetchQuestions();
   }, []);
@@ -156,7 +158,7 @@ export default function QuestionAnswerPage() {
       const response = await FetchData(
         `test/submit-response/${user?.[0]?._id}`,
         "post",
-        answers
+        { answers, setId: questionPaperId, testId: testId }
       );
       console.log(response);
     } catch (error) {

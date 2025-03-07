@@ -5,8 +5,13 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { Answer } from "../models/Answer.model.js";
-import { getRandomIndex } from "../utils/UtilityFunction.js";
+import {
+  getRandomIndex,
+  pairQuestionsWithAnswers,
+  PromptGenerator,
+} from "../utils/UtilityFunction.js";
 import Respondent from "../models/Respondent.model.js";
+import { GenerateGrades } from "../utils/AI-Response.js";
 
 const CreateTest = asyncHandler(async (req, res) => {
   const { title, topic, startTime, endTime } = req.body;
@@ -222,7 +227,7 @@ const GetQuestionPaper = asyncHandler(async (req, res) => {
 
   const randomSet = getRandomIndex(test.sets);
   const testSet = await QuestionPaper.findById(test.sets[randomSet]);
-  console.log(testSet)
+  console.log(testSet);
   if (!testSet)
     throw new ApiError(500, "Some internal error in finding random sets!");
 
@@ -253,12 +258,21 @@ const SubmitAnswersResponse = asyncHandler(async (req, res) => {
   if (!test)
     throw new ApiError(400, "Provider test id is not valid! Please try again");
 
-  const set = await Set.findById(setId);
+  const set = await QuestionPaper.findById(setId);
   if (!set)
     throw new ApiError(400, "Provider set id is not valid! Please try again");
 
+  const question_and_answer = pairQuestionsWithAnswers(set.questions, answers);
+  const prompt = PromptGenerator(question_and_answer);
+
+  const AI_Response = await GenerateGrades(prompt);
+
+  console.log("from controller", AI_Response);
+
+  // const { grade, explanation } = extractGradeAndExplanation();
+
   const answer = await Answer.create({
-    answers,
+    answer: answers,
     questionPaper: set._id,
     test: test._id,
     responder: studentId,
@@ -289,6 +303,37 @@ const SubmitAnswersResponse = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, {}, "Your answer is updated successfully 😊"));
 });
 
+const CheckIfAttemptedTheTest = asyncHandler(async (req, res) => {
+  const { studentId, testId } = req.params;
+  if (!studentId) throw new ApiError(400, "Please provide student id!");
+  if (!testId) throw new ApiError(400, "Please provide test id!");
+  const student = await Respondent.findById(studentId);
+  if (!student) throw new ApiError(400, "Student not found!");
+
+  const test = await Test.findById(testId).populate("answer");
+  if (!test) throw new ApiError(400, "Test not found!");
+  const isAttempted = test.answer.some((answer) =>
+    answer.responder.equals(studentId)
+  );
+
+  if (isAttempted)
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { success: 401, message: "Already attempted!" },
+          "You have already attempted this test!!"
+        )
+      );
+  else
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, { success: 200, message: "New attempt!" }, "")
+      );
+});
+
 export {
   CreateTest,
   GetMyTests,
@@ -300,4 +345,5 @@ export {
   DeleteQuestionPaper,
   UpdateQuestionPaper,
   SubmitAnswersResponse,
+  CheckIfAttemptedTheTest,
 };

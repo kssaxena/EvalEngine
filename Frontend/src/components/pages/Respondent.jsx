@@ -2,13 +2,31 @@ import React, { useState } from "react";
 import Button from "../../utils/Button";
 import { Respondent1 } from "../../assets/Images";
 import { useNavigate } from "react-router-dom";
+import { FetchData } from "../../utils/FetchFromApi";
+import { useSelector } from "react-redux";
 
 const Respondent = () => {
   const [inputValue, setInputValue] = useState("");
+  const [hasAttempted, setHasAttempted] = useState(false);
+  const user = useSelector((store) => store.user.user);
+  console.log(user);
+
   const navigate = useNavigate();
 
-  const handleToTest = () => {
-    navigate(`/answers-page/${inputValue}`);
+  const handleToTest = async () => {
+    try {
+      const response = await FetchData(
+        `test/check-the-attempts/${inputValue}/${user[0]._id}`,
+        "get"
+      );
+      console.log(response);
+      if (response.data.data.success === 401)
+        alert("You have already attempted this test!");
+      else if (response.data.data.success === 200)
+        navigate(`/answers-page/${inputValue}`);
+    } catch (error) {
+      console.error("error", error);
+    }
   };
 
   return (

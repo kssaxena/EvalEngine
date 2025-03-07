@@ -2,7 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 // import { Configuration, OpenAIApi } from "openai";
-import { OpenAI } from "openai";
+// import { OpenAI } from "openai";
 
 const app = express();
 
