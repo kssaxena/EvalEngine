@@ -6,6 +6,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { Answer } from "../models/Answer.model.js";
 import {
+  extractGradeAndExplanation,
   getRandomIndex,
   pairQuestionsWithAnswers,
   PromptGenerator,
@@ -269,13 +270,17 @@ const SubmitAnswersResponse = asyncHandler(async (req, res) => {
 
   console.log("from controller", AI_Response);
 
-  // const { grade, explanation } = extractGradeAndExplanation();
+  const { grade, explanation } = extractGradeAndExplanation(AI_Response);
 
   const answer = await Answer.create({
     answer: answers,
     questionPaper: set._id,
     test: test._id,
     responder: studentId,
+    score:{
+      grade: grade,
+      explanation: explanation,
+    }
   });
 
   if (!answer)
@@ -283,6 +288,8 @@ const SubmitAnswersResponse = asyncHandler(async (req, res) => {
       500,
       "Failed to create answer due to some internal error! Please try again"
     );
+
+    console.log("answer", answer);
 
   const updatedTest = await Test.findByIdAndUpdate(
     testId,
