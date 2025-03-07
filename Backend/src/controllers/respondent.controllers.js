@@ -1,5 +1,6 @@
 import ApiError from "../utils/ApiError.js";
-import  Respondent from "../models/respondent.model.js";
+// import Respondent from "../models/respondent.model.js";
+import Respondent from "../models/Respondent.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
@@ -155,9 +156,32 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
+const getAllTests = asyncHandler(async (req, res) => {
+  const { studentId } = req.params;
+  console.log(studentId);
+
+  if (!studentId) throw new ApiError(400, "Please provide student id!");
+
+  const student = await Respondent.findById(studentId).populate(
+    "attemptedTest"
+  );
+  if (!student) throw new ApiError(400, "Student not found!");
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { allTests: student.attemptedTest },
+        "Got your all tests"
+      )
+    );
+});
+
 export {
   RespondentRegister,
   generateAccessAndRefreshTokens,
   RespondentLogin,
   refreshAccessToken,
+  getAllTests,
 };

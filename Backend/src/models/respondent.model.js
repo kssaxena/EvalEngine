@@ -19,6 +19,11 @@ const respondentSchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
+    attemptedTest: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Test",
+      default: null,
+    }],
   },
   {
     timestamps: true,

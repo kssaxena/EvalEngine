@@ -1,30 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Button from "../utils/Button";
+import { FetchData } from "../utils/FetchFromApi";
 
 const ProfileStudent = () => {
   const user = useSelector((store) => store.user.user);
   console.log(user);
+  console.log(user[0]._id);
+  const [tests, setTests] = useState([]);
+  // console.log(tests);
+  const getAllTests = async () => {
+    try {
+      const response = await FetchData(
+        `respondent/get-all-test-details/${user[0]._id}`,
+        "get"
+      );
+      console.log(response);
+      setTests(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllTests();
+  }, []);
 
   const ListElement = ({ element, index }) => {
     return (
       <div className="group flex justify-between items-center px-4  mx-5  my-4 h-8 rounded-xl bg-[#6A47FF] drop-shadow-lg hover:scale-105 hover:drop-shadow-2xl  hover:h-12 transition duration-200 ease-in-out cursor-pointer">
         <span className="">{index + 1}</span>
         <h2 className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-          Maths Test
+          {tests?.name}
         </h2>
         <p>
           on{" "}
           <span className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-            15th March
+            {tests?.date}
           </span>{" "}
           2023
         </p>
         <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-          from 12:00 am
+          from <span>{tests?.from}</span>
         </p>
         <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-          to 1:00 pm
+          to <span>{tests?.to}</span>
         </p>
       </div>
     );
@@ -47,7 +67,7 @@ const ProfileStudent = () => {
 
         <div className="mt-8 flex  justify-around h-auto w-full">
           {/* Upcoming Test Section */}
-          <div className="bg-white/20 w-1/2 h-96 m-2 rounded-lg backdrop-blur-2xl text-white   overflow-hidden">
+          {/* <div className="bg-white/20 w-1/2 h-96 m-2 rounded-lg backdrop-blur-2xl text-white   overflow-hidden">
             <h3 className="text-xl font-serif text-center font-semibold  ">
               Upcoming Test
             </h3>
@@ -58,7 +78,7 @@ const ProfileStudent = () => {
                   <ListElement key={index} index={index} element={element} />
                 ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Completed Test Section */}
           <div className="bg-white/20 w-1/2 h-96 m-2 rounded-lg backdrop-blur-2xl text-white   overflow-hidden">

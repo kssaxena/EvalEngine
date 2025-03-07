@@ -305,6 +305,9 @@ const SubmitAnswersResponse = asyncHandler(async (req, res) => {
       "Failed to submit answers due to some internal error! Please try again"
     );
 
+    student.attemptedTest.push(updatedTest._id);
+   await student.save()
+
   res
     .status(201)
     .json(new ApiResponse(201, {}, "Your answer is updated successfully 😊"));
