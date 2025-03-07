@@ -33,7 +33,7 @@ const defaultTestData = {
   ],
 };
 
-export default function StudentTestEvaluation() {
+export default function StudentTestEvaluation({allData}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [testData] = useState(defaultTestData);
 

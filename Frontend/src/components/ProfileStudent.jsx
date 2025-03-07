@@ -3,12 +3,15 @@ import { useSelector } from "react-redux";
 import Button from "../utils/Button";
 import { FetchData } from "../utils/FetchFromApi";
 import StudentTestEvaluation from "./pages/RespondentTestResult";
+import { X } from "lucide-react";
 
 const ProfileStudent = () => {
   const user = useSelector((store) => store.user.user);
   console.log(user);
   console.log(user[0]._id);
   const [tests, setTests] = useState([]);
+  const [grade, setGrade] = useState("");
+  const [explain, setExplain] = useState("");
   // console.log(tests);
   const getAllTests = async () => {
     try {
@@ -18,6 +21,10 @@ const ProfileStudent = () => {
       );
       console.log(response);
       setTests(response.data.data.allTests);
+      setGrade(response.data?.data?.allTests[0]?.answer[0]?.score?.grade);
+      setExplain(
+        response.data?.data?.allTests[0]?.answer[0]?.score?.explanation
+      );
     } catch (error) {
       console.error(error);
     }
@@ -33,19 +40,18 @@ const ProfileStudent = () => {
       <div className="w-full">
         <button
           onClick={() => setShowPopup(true)}
-          className="group flex justify-between items-center px-4    my-4 h-8 rounded-xl bg-[#6A47FF] drop-shadow-lg hover:scale-105 hover:drop-shadow-2xl  hover:h-12 transition duration-200 ease-in-out cursor-pointer w-full"
+          className="group flex justify-between items-center px-4    my-4 h-8 rounded-xl bg-[#6A47FF] drop-shadow-lg   transition duration-200 ease-in-out cursor-pointer w-full"
         >
           <span className="">{index + 1}</span>
           <h2 className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110 text-center w-full">
             {element?.title}
           </h2>
-          {/* <p>
-          on{" "}
-          <span className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
-            {element?.date}
-          </span>{" "}
-          2023
-        </p> */}
+          <p>
+            Grade:
+            <span className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
+              {grade}
+            </span>{" "}
+          </p>
           {/* <p className="transition duration-200 ease-in-out group-hover:font-bold group-hover:scale-110">
           from <span>{element?.from}</span>
         </p>
@@ -53,7 +59,23 @@ const ProfileStudent = () => {
           to <span>{element?.to}</span>
         </p> */}
         </button>
-        {showPopup && <StudentTestEvaluation />}
+        {showPopup && (
+          <div className=" w-full h-fit py-4 bg-[#FBF6E9] rounded-xl text-black">
+            <button
+              className=" w-fit bg-red-400 p-2 rounded-xl"
+              onClick={() => setShowPopup(false)}
+            >
+              <X />
+            </button>
+            {/* <StudentTestEvaluation allData={tests} /> */}
+            <h1 className="text-black font-medium my-4 mx-1">
+              You received{" "}
+              <span className="text-xl font-bold">{grade} Grade</span> here is
+              the clarification of the grade you received:
+            </h1>
+            <h1 className=" mx-2 text-sm">{explain}</h1>
+          </div>
+        )}
       </div>
     );
   };
