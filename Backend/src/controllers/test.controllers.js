@@ -6,6 +6,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { Answer } from "../models/Answer.model.js";
 import { getRandomIndex } from "../utils/UtilityFunction.js";
+import Respondent from "../models/Respondent.model.js";
 
 const CreateTest = asyncHandler(async (req, res) => {
   const { title, topic, startTime, endTime } = req.body;
