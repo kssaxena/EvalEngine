@@ -87,11 +87,11 @@ const Header = () => {
               console.log(localStorage.getItem("refreshToken"));
             }}
           />
-          <Button
+          {/* <Button
             name={<Info />}
             className={"rounded-full bg-transparent"}
             OnClick={() => setShowInstructions(true)}
-          />
+          /> */}
 
           {showInstructions && (
             <div>
